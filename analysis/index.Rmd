@@ -8,4 +8,14 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Prepare input data
+---------------------------------------------------------------
+
++ [Prepare input data for GM12878 cell line](prepare_input_data_GM12878.html)
+
++ [Prepare input data for K562 cell line](prepare_input_data_K562.html)
+
+Aggregate footprint profiles around motif match sites
+---------------------------------------------------------------
+
++ [Plot aggregate footprint profiles](plot_aggregate_footprint_profiles.html)
