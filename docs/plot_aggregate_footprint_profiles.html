@@ -35,7 +35,6 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -235,9 +234,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -355,14 +351,6 @@ div.tocify {
 </div><!--/.navbar -->
 
 <div id="header">
-
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
 
@@ -528,13 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongbe43eb7">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree0f500a08c0ad187fbf989be07e33ba441820b812targetblank0f500a0a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> be43eb7
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/0f500a08c0ad187fbf989be07e33ba441820b812" target="_blank">0f500a0</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongbe43eb7"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree0f500a08c0ad187fbf989be07e33ba441820b812targetblank0f500a0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +533,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version be43eb7.
+The results in this page were generated with repository version
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/0f500a08c0ad187fbf989be07e33ba441820b812" target="_blank">0f500a0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,9 +551,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -614,7 +602,41 @@ Message
 Rmd
 </td>
 <td>
-be43eb7
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/0f500a08c0ad187fbf989be07e33ba441820b812/analysis/plot_aggregate_footprint_profiles.Rmd" target="_blank">0f500a0</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+wflow_publish("analysis/plot_aggregate_footprint_profiles.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kevinlkx/footprint_clustering/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/plot_aggregate_footprint_profiles.html" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/be43eb73da8b77b1aa996ef813f2e08cfad8aeff/analysis/plot_aggregate_footprint_profiles.Rmd" target="_blank">be43eb7</a>
 </td>
 <td>
 kevinlkx
@@ -647,8 +669,24 @@ sites.</p>
 window on both sides of motif matches.</p>
 <p>We downloaded DNase-seq, ATAC-seq and CTCF ChIP-seq data in GM12878
 from ENCODE.</p>
-<pre class="r"><code># sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds&#39;)
-
+<p>About the processed files:</p>
+<ul>
+<li><p><code>sites</code>: a data frame with the motif matches (result
+from FIMO).</p></li>
+<li><p><code>CTCF.GM12878.sites.chip.labels.rds</code>: a data frame
+with the CTCF motif matches (result from FIMO, first 7 columns, as in
+<code>sites</code>), as well as normalized ChIP-seq counts (“chip”
+column) and ChIP-seq peak labels (“chip_label”) in GM12878.</p></li>
+<li><p><code>*.DNase.counts.mat.rds</code>: a matrix where the rows are
+the motif matches (in the same order as <code>sites</code>), and the
+columns are the DNase-seq counts at each position in the window. The
+first half of the columns are counts on the forward strand, and the
+second half are counts on the reverse strand. We could simple combine
+the counts on both strands as shown below.</p></li>
+<li><p><code>*.ATAC.counts.mat.rds</code>: ATAC-seq count matrix,
+similar to <code>*.DNase.counts.mat.rds</code>.</p></li>
+</ul>
+<pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds&#39;)
 sites_chip_labels &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.sites.chip.labels.rds&#39;)
 
 dnase_count_matrix &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.DNase.counts.mat.rds&#39;)
@@ -668,12 +706,86 @@ dnase_neg_profile &lt;- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
                       title = &quot;Aggregate DNase-seq profiles around CTCF motifs in GM12878&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-3-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 atac_pos_profile &lt;- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
 atac_neg_profile &lt;- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
                       title = &quot;Aggregate ATAC-seq profiles around CTCF motifs in GM12878&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-3-2.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Heatmap of 2000 positive sites and 2000 negative sites</p>
 <p>We randomly sample 2000 positive sites and 2000 negative sites, and
 plot the PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.</p>
@@ -699,6 +811,43 @@ plot_data_matrix_heatmap(pwm, data.l, chip.df, rank,
                          zMax_data = c(1, 3), 
                          zMax_chip = c(200, 1))</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-4-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ctcf-profiles-in-k562" class="section level3">
 <h3>CTCF profiles in K562</h3>
@@ -727,12 +876,86 @@ dnase_neg_profile &lt;- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
                       title = &quot;Aggregate DNase-seq profiles around CTCF motifs in K562&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-6-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 atac_pos_profile &lt;- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
 atac_neg_profile &lt;- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
                       title = &quot;Aggregate ATAC-seq profiles around CTCF motifs in K562&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-6-2.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Heatmap of 2000 positive sites and 2000 negative sites</p>
 <p>We randomly sample 2000 positive sites and 2000 negative sites, and
 plot the PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.</p>
@@ -758,6 +981,43 @@ plot_data_matrix_heatmap(pwm, data.l, chip.df, rank,
                          zMax_data = c(1, 3), 
                          zMax_chip = c(200, 1))</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-7-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="rest" class="section level2">
@@ -789,12 +1049,86 @@ dnase_neg_profile &lt;- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
                       title = &quot;Aggregate DNase-seq profiles around REST motifs in GM12878&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-9-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 atac_pos_profile &lt;- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
 atac_neg_profile &lt;- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
                       title = &quot;Aggregate ATAC-seq profiles around REST motifs in GM12878&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-9-2.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Heatmap of 2000 positive sites and 2000 negative sites</p>
 <p>We randomly sample 2000 positive sites and 2000 negative sites, and
 plot the PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.</p>
@@ -820,6 +1154,43 @@ plot_data_matrix_heatmap(pwm, data.l, chip.df, rank,
                          zMax_data = c(1, 3), 
                          zMax_chip = c(200, 1))</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-10-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ctcf-profiles-in-k562-1" class="section level3">
 <h3>CTCF profiles in K562</h3>
@@ -848,12 +1219,86 @@ dnase_neg_profile &lt;- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
                       title = &quot;Aggregate DNase-seq profiles around REST motifs in K562&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-12-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 atac_pos_profile &lt;- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
 atac_neg_profile &lt;- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
 plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
                       title = &quot;Aggregate ATAC-seq profiles around REST motifs in K562&quot;)</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-2">
+Past versions of unnamed-chunk-12-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-12-2.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Heatmap of 2000 positive sites and 2000 negative sites</p>
 <p>We randomly sample 2000 positive sites and 2000 negative sites, and
 plot the PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.</p>
@@ -879,6 +1324,43 @@ plot_data_matrix_heatmap(pwm, data.l, chip.df, rank,
                          zMax_data = c(1, 3), 
                          zMax_chip = c(200, 1))</code></pre>
 <p><img src="figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/2c0e42e87988eb6a6d5acaecb20a9f8176f327f7/docs/figure/plot_aggregate_footprint_profiles.Rmd/unnamed-chunk-13-1.png" target="_blank">2c0e42e</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -979,11 +1461,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 <script>
 $(document).ready(function ()  {
