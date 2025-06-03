@@ -4,7 +4,6 @@ author: "Kaixuan Luo"
 date: "`r Sys.Date()`"
 output:
   workflowr::wflow_html:
-    code_folding: hide
     toc: true
 editor_options:
   chunk_output_type: console
@@ -34,9 +33,22 @@ We scanned CTCF motif matches along the genome, then extended 100bp window on bo
 
 We downloaded DNase-seq, ATAC-seq and CTCF ChIP-seq data in GM12878 from ENCODE. 
 
-```{r}
-# sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+About the processed files:
 
+ + `sites`: a data frame with the motif matches (result from FIMO).
+  
+  + `CTCF.GM12878.sites.chip.labels.rds`: a data frame with the CTCF motif matches (result from FIMO, first 7 columns, as in `sites`), 
+  as well as normalized ChIP-seq counts ("chip" column) and ChIP-seq peak labels ("chip_label") in GM12878.
+  
+  + `*.DNase.counts.mat.rds`: a matrix where the rows are the motif matches (in the same order as `sites`), 
+  and the columns are the DNase-seq counts at each position in the window. 
+  The first half of the columns are counts on the forward strand, and the second half are counts on the reverse strand. 
+  We could simple combine the counts on both strands as shown below.
+  
+  + `*.ATAC.counts.mat.rds`: ATAC-seq count matrix, similar to `*.DNase.counts.mat.rds`.
+
+```{r}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
 sites_chip_labels <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.sites.chip.labels.rds')
 
 dnase_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.DNase.counts.mat.rds')
