@@ -1,0 +1,298 @@
+---
+title: "Aggregate profiles around motif sites"
+author: "Kaixuan Luo"
+date: "`r Sys.Date()`"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+source("code/plots.R")
+```
+
+Here, we explore the accessibility profiles round TF motif match sites.
+
+## CTCF
+
+### CTCF profiles in GM12878
+
+We scanned CTCF motif matches along the genome, then extended 100bp window on both sides of motif matches. 
+
+We downloaded DNase-seq, ATAC-seq and CTCF ChIP-seq data in GM12878 from ENCODE. 
+
+```{r}
+# sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+sites_chip_labels <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.sites.chip.labels.rds')
+
+dnase_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.DNase.counts.mat.rds')
+# combine counts on both strands
+dnase_count_matrix <- dnase_count_matrix[,1:(ncol(dnase_count_matrix)/2)] + dnase_count_matrix[,(ncol(dnase_count_matrix)/2+1):ncol(dnase_count_matrix)]
+
+atac_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.ATAC.counts.mat.rds')
+# combine counts on both strands
+atac_count_matrix <- atac_count_matrix[,1:(ncol(atac_count_matrix)/2)] + atac_count_matrix[,(ncol(atac_count_matrix)/2+1):ncol(atac_count_matrix)]
+```
+
+Plot aggregate profiles of DNase-seq and ATAC-seq counts around motif sites.
+
+```{r, fig.width=7, fig.height=4}
+pos_idx <- which(sites_chip_labels$chip_label == 1)
+neg_idx <- which(sites_chip_labels$chip_label == 0)
+
+dnase_pos_profile <- colMeans(dnase_count_matrix[pos_idx, ], na.rm = TRUE)
+dnase_neg_profile <- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
+                      title = "Aggregate DNase-seq profiles around CTCF motifs in GM12878")
+
+atac_pos_profile <- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
+atac_neg_profile <- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
+                      title = "Aggregate ATAC-seq profiles around CTCF motifs in GM12878")
+```
+
+Heatmap of 2000 positive sites and 2000 negative sites
+
+We randomly sample 2000 positive sites and 2000 negative sites, and plot the 
+PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.
+
+```{r, fig.width=8, fig.height=6}
+set.seed(1)
+sites_idx <- c(sample(pos_idx, 2000), sample(neg_idx, 2000))
+
+pwm = sites_chip_labels$pwm.score[sites_idx]
+chip = sites_chip_labels$chip[sites_idx]
+chip_label = sites_chip_labels$chip_label[sites_idx]
+dnase_data = dnase_count_matrix[sites_idx,]
+atac_data = atac_count_matrix[sites_idx,]
+
+rank = order(chip_label, chip)
+
+data.l <- list(DNaase = dnase_data,
+               ATAC = atac_data)
+chip.df <- data.frame(chip = chip, chip_label = chip_label)
+
+plot_data_matrix_heatmap(pwm, data.l, chip.df, rank, 
+                         data_name = c("DNase-seq", "ATAC-seq"), 
+                         chip_name = c("ChIP-seq counts", "ChIP-seq peaks"), 
+                         title = "CTCF sites in GM12878",
+                         zMax_data = c(1, 3), 
+                         zMax_chip = c(200, 1))
+```
+
+
+### CTCF profiles in K562
+
+We scanned CTCF motif matches along the genome, then extended 100bp window on both sides of motif matches. 
+
+We downloaded DNase-seq, ATAC-seq and CTCF ChIP-seq data in K562 from ENCODE. 
+
+```{r}
+# sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+sites_chip_labels <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.sites.chip.labels.rds')
+
+dnase_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.DNase.counts.mat.rds')
+# combine counts on both strands
+dnase_count_matrix <- dnase_count_matrix[,1:(ncol(dnase_count_matrix)/2)] + dnase_count_matrix[,(ncol(dnase_count_matrix)/2+1):ncol(dnase_count_matrix)]
+
+atac_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.ATAC.counts.mat.rds')
+# combine counts on both strands
+atac_count_matrix <- atac_count_matrix[,1:(ncol(atac_count_matrix)/2)] + atac_count_matrix[,(ncol(atac_count_matrix)/2+1):ncol(atac_count_matrix)]
+```
+
+Plot aggregate profiles of DNase-seq and ATAC-seq counts around motif sites.
+
+```{r, fig.width=7, fig.height=4}
+pos_idx <- which(sites_chip_labels$chip_label == 1)
+neg_idx <- which(sites_chip_labels$chip_label == 0)
+
+dnase_pos_profile <- colMeans(dnase_count_matrix[pos_idx, ], na.rm = TRUE)
+dnase_neg_profile <- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
+                      title = "Aggregate DNase-seq profiles around CTCF motifs in K562")
+
+atac_pos_profile <- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
+atac_neg_profile <- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
+                      title = "Aggregate ATAC-seq profiles around CTCF motifs in K562")
+```
+
+Heatmap of 2000 positive sites and 2000 negative sites
+
+We randomly sample 2000 positive sites and 2000 negative sites, and plot the 
+PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.
+
+```{r, fig.width=8, fig.height=6}
+set.seed(1)
+sites_idx <- c(sample(pos_idx, 2000), sample(neg_idx, 2000))
+
+pwm = sites_chip_labels$pwm.score[sites_idx]
+chip = sites_chip_labels$chip[sites_idx]
+chip_label = sites_chip_labels$chip_label[sites_idx]
+dnase_data = dnase_count_matrix[sites_idx,]
+atac_data = atac_count_matrix[sites_idx,]
+
+rank = order(chip_label, chip)
+
+data.l <- list(DNaase = dnase_data,
+               ATAC = atac_data)
+chip.df <- data.frame(chip = chip, chip_label = chip_label)
+
+plot_data_matrix_heatmap(pwm, data.l, chip.df, rank, 
+                         data_name = c("DNase-seq", "ATAC-seq"), 
+                         chip_name = c("ChIP-seq counts", "ChIP-seq peaks"), 
+                         title = "CTCF sites in K562",
+                         zMax_data = c(1, 3), 
+                         zMax_chip = c(200, 1))
+```
+
+
+## REST
+
+### REST profiles in GM12878
+
+We scanned REST motif matches along the genome, then extended 100bp window on both sides of motif matches. 
+
+We downloaded DNase-seq, ATAC-seq and REST ChIP-seq data in GM12878 from ENCODE. 
+
+```{r}
+# sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST_MA0138.3_1e-5.candidate.sites.rds')
+
+sites_chip_labels <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.sites.chip.labels.rds')
+
+dnase_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.DNase.counts.mat.rds')
+# combine counts on both strands
+dnase_count_matrix <- dnase_count_matrix[,1:(ncol(dnase_count_matrix)/2)] + dnase_count_matrix[,(ncol(dnase_count_matrix)/2+1):ncol(dnase_count_matrix)]
+
+atac_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.ATAC.counts.mat.rds')
+# combine counts on both strands
+atac_count_matrix <- atac_count_matrix[,1:(ncol(atac_count_matrix)/2)] + atac_count_matrix[,(ncol(atac_count_matrix)/2+1):ncol(atac_count_matrix)]
+```
+
+Plot aggregate profiles of DNase-seq and ATAC-seq counts around motif sites.
+
+```{r, fig.width=7, fig.height=4}
+pos_idx <- which(sites_chip_labels$chip_label == 1)
+neg_idx <- which(sites_chip_labels$chip_label == 0)
+
+dnase_pos_profile <- colMeans(dnase_count_matrix[pos_idx, ], na.rm = TRUE)
+dnase_neg_profile <- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
+                      title = "Aggregate DNase-seq profiles around REST motifs in GM12878")
+
+atac_pos_profile <- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
+atac_neg_profile <- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
+                      title = "Aggregate ATAC-seq profiles around REST motifs in GM12878")
+```
+
+Heatmap of 2000 positive sites and 2000 negative sites
+
+We randomly sample 2000 positive sites and 2000 negative sites, and plot the 
+PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.
+
+```{r, fig.width=8, fig.height=6}
+set.seed(1)
+sites_idx <- c(sample(pos_idx, 2000), sample(neg_idx, 2000))
+
+pwm = sites_chip_labels$pwm.score[sites_idx]
+chip = sites_chip_labels$chip[sites_idx]
+chip_label = sites_chip_labels$chip_label[sites_idx]
+dnase_data = dnase_count_matrix[sites_idx,]
+atac_data = atac_count_matrix[sites_idx,]
+
+rank = order(chip_label, chip)
+
+data.l <- list(DNaase = dnase_data,
+               ATAC = atac_data)
+chip.df <- data.frame(chip = chip, chip_label = chip_label)
+
+plot_data_matrix_heatmap(pwm, data.l, chip.df, rank, 
+                         data_name = c("DNase-seq", "ATAC-seq"), 
+                         chip_name = c("ChIP-seq counts", "ChIP-seq peaks"), 
+                         title = "REST sites in GM12878",
+                         zMax_data = c(1, 3), 
+                         zMax_chip = c(200, 1))
+```
+
+
+### CTCF profiles in K562
+
+We scanned REST motif matches along the genome, then extended 100bp window on both sides of motif matches. 
+
+We downloaded DNase-seq, ATAC-seq and REST ChIP-seq data in K562 from ENCODE. 
+
+```{r}
+# sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST_MA0138.3_1e-5.candidate.sites.rds')
+
+sites_chip_labels <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.K562.sites.chip.labels.rds')
+
+dnase_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.K562.DNase.counts.mat.rds')
+# combine counts on both strands
+dnase_count_matrix <- dnase_count_matrix[,1:(ncol(dnase_count_matrix)/2)] + dnase_count_matrix[,(ncol(dnase_count_matrix)/2+1):ncol(dnase_count_matrix)]
+
+atac_count_matrix <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.K562.ATAC.counts.mat.rds')
+# combine counts on both strands
+atac_count_matrix <- atac_count_matrix[,1:(ncol(atac_count_matrix)/2)] + atac_count_matrix[,(ncol(atac_count_matrix)/2+1):ncol(atac_count_matrix)]
+```
+
+Plot aggregate profiles of DNase-seq and ATAC-seq counts around motif sites.
+
+```{r, fig.width=7, fig.height=4}
+pos_idx <- which(sites_chip_labels$chip_label == 1)
+neg_idx <- which(sites_chip_labels$chip_label == 0)
+
+dnase_pos_profile <- colMeans(dnase_count_matrix[pos_idx, ], na.rm = TRUE)
+dnase_neg_profile <- colMeans(dnase_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(dnase_pos_profile, dnase_neg_profile, 
+                      title = "Aggregate DNase-seq profiles around REST motifs in K562")
+
+atac_pos_profile <- colMeans(atac_count_matrix[pos_idx, ], na.rm = TRUE)
+atac_neg_profile <- colMeans(atac_count_matrix[neg_idx, ], na.rm = TRUE)
+plot_pos_neg_profiles(atac_pos_profile, atac_neg_profile, 
+                      title = "Aggregate ATAC-seq profiles around REST motifs in K562")
+```
+
+Heatmap of 2000 positive sites and 2000 negative sites
+
+We randomly sample 2000 positive sites and 2000 negative sites, and plot the 
+PWM scores, DNase-seq, ATAC-seq and ChIP-seq results.
+
+```{r, fig.width=8, fig.height=6}
+set.seed(1)
+sites_idx <- c(sample(pos_idx, 2000), sample(neg_idx, 2000))
+
+pwm = sites_chip_labels$pwm.score[sites_idx]
+chip = sites_chip_labels$chip[sites_idx]
+chip_label = sites_chip_labels$chip_label[sites_idx]
+dnase_data = dnase_count_matrix[sites_idx,]
+atac_data = atac_count_matrix[sites_idx,]
+
+rank = order(chip_label, chip)
+
+data.l <- list(DNaase = dnase_data,
+               ATAC = atac_data)
+chip.df <- data.frame(chip = chip, chip_label = chip_label)
+
+plot_data_matrix_heatmap(pwm, data.l, chip.df, rank, 
+                         data_name = c("DNase-seq", "ATAC-seq"), 
+                         chip_name = c("ChIP-seq counts", "ChIP-seq peaks"), 
+                         title = "REST sites in K562",
+                         zMax_data = c(1, 3), 
+                         zMax_chip = c(200, 1))
+```
