@@ -27,7 +27,7 @@ Input data
 ==========
 
 Here, we show an example procedure with several steps 
-for preparing input data for CTCF using the human genome assembly version hg38.
+for preparing input data.
 
 Load R packages
 ```{r load-packages, eval=FALSE, message=FALSE, warning=FALSE}
