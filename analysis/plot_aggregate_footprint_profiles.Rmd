@@ -36,7 +36,7 @@ About the processed files:
 
  + `CTCF_MA0139.2_1e-5.candidate.sites.rds`: a data frame of candidate binding sites matching CTCF motif (MA0139.2) (result from FIMO, p-value < 1e-5).
   
-  + `CTCF.GM12878.sites.chip.labels.rds`: a data frame with the CTCF motif matches (result from FIMO, first 7 columns, as in `sites`), 
+  + `CTCF.GM12878.sites.chip.labels.rds`: a data frame with the CTCF motif matches (result from FIMO, as in `*.candidate.sites.rds`), 
   as well as normalized ChIP-seq counts ("chip" column) and ChIP-seq peak labels ("chip_label") in GM12878.
   
   + `*.DNase.counts.mat.rds`: a matrix where the rows are the motif matches (in the same order as `sites`), 
