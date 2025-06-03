@@ -516,15 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8b47c80dd1092be66fbe33a1c04aec8519aa0bd5targetblank8b47c80a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree75db1bed559bec75e5b7ce84cdddc473cb992a39targetblank75db1bea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/8b47c80dd1092be66fbe33a1c04aec8519aa0bd5" target="_blank">8b47c80</a>
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/75db1bed559bec75e5b7ce84cdddc473cb992a39" target="_blank">75db1be</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8b47c80dd1092be66fbe33a1c04aec8519aa0bd5targetblank8b47c80a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree75db1bed559bec75e5b7ce84cdddc473cb992a39targetblank75db1bea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -534,7 +534,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/8b47c80dd1092be66fbe33a1c04aec8519aa0bd5" target="_blank">8b47c80</a>.
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/75db1bed559bec75e5b7ce84cdddc473cb992a39" target="_blank">75db1be</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -551,7 +551,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
 
 </code></pre>
 <p>
@@ -598,6 +597,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/75db1bed559bec75e5b7ce84cdddc473cb992a39/analysis/plot_aggregate_footprint_profiles.Rmd" target="_blank">75db1be</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+wflow_publish("analysis/plot_aggregate_footprint_profiles.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kevinlkx/footprint_clustering/1d1da224cc17370f14580ea5ec5ae62068ad1bb0/docs/plot_aggregate_footprint_profiles.html" target="_blank">1d1da22</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -782,14 +815,17 @@ with the CTCF motif matches (result from FIMO, as in
 <code>*.candidate.sites.rds</code>), as well as normalized ChIP-seq
 counts (“chip” column) and ChIP-seq peak labels (“chip_label”) in
 GM12878.</p></li>
-<li><p><code>*.DNase.counts.mat.rds</code>: a matrix where the rows are
-the motif matches (in the same order as <code>sites</code>), and the
-columns are the DNase-seq counts at each position in the window. The
-first half of the columns are counts on the forward strand, and the
-second half are counts on the reverse strand. We could simple combine
-the counts on both strands as shown below.</p></li>
-<li><p><code>*.ATAC.counts.mat.rds</code>: ATAC-seq count matrix,
-similar to <code>*.DNase.counts.mat.rds</code>.</p></li>
+<li><p><code>CTCF.GM12878.DNase.counts.mat.rds</code>: a matrix where
+the rows are the motif matches (in the same order as
+<code>*.candidate.sites.rds</code>), and the columns are the DNase-seq
+counts at each position in the window. The first half of the columns are
+counts on the forward strand, and the second half are counts on the
+reverse strand. We could simple combine the counts on both strands as
+shown below. After combining the strands, we will have counts for the
+100 bp on the left flanking window, counts in motif region, and 100bp on
+the right flanking window.</p></li>
+<li><p><code>CTCF.GM12878.ATAC.counts.mat.rds</code>: ATAC-seq count
+matrix, similar to <code>*.DNase.counts.mat.rds</code>.</p></li>
 </ul>
 <pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds&#39;)
 sites_chip_labels &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.sites.chip.labels.rds&#39;)
