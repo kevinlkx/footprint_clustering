@@ -516,15 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8ab13cbac998a0316815e02ee34f852fdbae935atargetblank8ab13cba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8b47c80dd1092be66fbe33a1c04aec8519aa0bd5targetblank8b47c80a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/8ab13cbac998a0316815e02ee34f852fdbae935a" target="_blank">8ab13cb</a>
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/8b47c80dd1092be66fbe33a1c04aec8519aa0bd5" target="_blank">8b47c80</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8ab13cbac998a0316815e02ee34f852fdbae935atargetblank8ab13cba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8b47c80dd1092be66fbe33a1c04aec8519aa0bd5targetblank8b47c80a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -534,7 +534,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/8ab13cbac998a0316815e02ee34f852fdbae935a" target="_blank">8ab13cb</a>.
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/8b47c80dd1092be66fbe33a1c04aec8519aa0bd5" target="_blank">8b47c80</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -551,6 +551,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
 
 </code></pre>
 <p>
@@ -597,6 +598,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/8b47c80dd1092be66fbe33a1c04aec8519aa0bd5/analysis/plot_aggregate_footprint_profiles.Rmd" target="_blank">8b47c80</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+wflow_publish("analysis/plot_aggregate_footprint_profiles.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kevinlkx/footprint_clustering/7ca564bb396a7542943c1831e30d6cc91470cb15/docs/plot_aggregate_footprint_profiles.html" target="_blank">7ca564b</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -727,8 +762,8 @@ wflow_publish("analysis/plot_aggregate_footprint_profiles.Rmd")
 library(data.table)
 library(ggplot2)
 source(&quot;code/plots.R&quot;)</code></pre>
-<p>Here, we explore the accessibility profiles round TF motif match
-sites.</p>
+<p>Here, we explore the DNase-seq and ATAC-seq accessibility profiles
+round TF motif matches.</p>
 <div id="ctcf" class="section level2">
 <h2>CTCF</h2>
 <div id="ctcf-profiles-in-gm12878" class="section level3">
@@ -1259,8 +1294,8 @@ kevinlkx
 </div>
 </div>
 </div>
-<div id="ctcf-profiles-in-k562-1" class="section level3">
-<h3>CTCF profiles in K562</h3>
+<div id="rest-profiles-in-k562" class="section level3">
+<h3>REST profiles in K562</h3>
 <p>We scanned REST motif matches along the genome, then extended 100bp
 window on both sides of motif matches.</p>
 <p>We downloaded DNase-seq, ATAC-seq and REST ChIP-seq data in K562 from
