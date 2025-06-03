@@ -11,7 +11,6 @@ editor_options:
 
 ```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
   comment = "#>"
 )
 ```
@@ -35,7 +34,7 @@ We downloaded DNase-seq, ATAC-seq and CTCF ChIP-seq data in GM12878 from ENCODE.
 
 About the processed files:
 
- + `sites`: a data frame with the motif matches (result from FIMO).
+ + `CTCF_MA0139.2_1e-5.candidate.sites.rds`: a data frame of candidate binding sites matching CTCF motif (MA0139.2) (result from FIMO, p-value < 1e-5).
   
   + `CTCF.GM12878.sites.chip.labels.rds`: a data frame with the CTCF motif matches (result from FIMO, first 7 columns, as in `sites`), 
   as well as normalized ChIP-seq counts ("chip" column) and ChIP-seq peak labels ("chip_label") in GM12878.
