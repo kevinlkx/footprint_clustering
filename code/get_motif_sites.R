@@ -30,7 +30,7 @@ rm(parser,out)
 
 sequence_file = '/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.fa'
 blacklist_file = '/project2/xinhe/kevinluo/footprint_clustering/data/ENCODE_blacklist/blacklist.hg38.bed.gz'
-motif_dir = '/project/spott/kevinluo/Fiber_seq/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme'
+motif_dir = '/project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme'
 outname = paste(tf_name, motif_name, thresh_pValue, sep = '_')
 
 chromsize_file = '/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes'
