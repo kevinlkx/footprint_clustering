@@ -1,5 +1,3 @@
-# footprint_clustering
+# TF footprint clustering analysis
 
-A [workflowr][] project.
-
-[workflowr]: https://github.com/workflowr/workflowr
+https://kevinlkx.github.io/footprint_clustering/
