@@ -1,0 +1,376 @@
+---
+title: "Prepare input data in GM12878 cell line"
+author: "Kaixuan Luo"
+date: "`r Sys.Date()`"
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  eval=FALSE,
+  comment = "#>"
+)
+```
+
+Install `TOP` R package
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("HarteminkLab/TOP")
+```
+
+Input data
+==========
+
+Here, we show an example procedure with several steps 
+for preparing input data for CTCF using the human genome assembly version hg38.
+
+Load R packages
+```{r load-packages, eval=FALSE, message=FALSE, warning=FALSE}
+library(TOP)
+library(data.table)
+```
+
+Step 1: Find TF motif matches using FIMO software
+-------------------------------------------------
+
+To scan for TF motif matches,  
+we use the [FIMO][fimo] software from [the MEME suite][MEME].
+
+Download hg38 reference genome FASTA file and save it as `hg38.fa`.
+```{bash download-fasta, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ref_genome
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ref_genome
+wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/analysisSet/hg38.analysisSet.fa.gz
+gunzip -c hg38.analysisSet.fa.gz > hg38.fa
+```
+
+Generate the `chrom.sizes` file which will be needed later.
+```{r, eval=FALSE}
+index_fa('/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.fa', chromsize_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
+```
+
+Download the motif files (in MEME format) from [JASPAR][jaspar]. 
+```{bash, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/motifs/
+cd /project2/xinhe/kevinluo/footprint_clustering/data/motifs/
+
+wget https://jaspar.elixir.no/download/data/2024/CORE/JASPAR2024_CORE_non-redundant_pfms_meme.zip
+unzip JASPAR2024_CORE_non-redundant_pfms_meme.zip -d JASPAR2024_CORE_non-redundant_pfms_meme
+```
+
+Run FIMO
+
+Step 2: Get candidate TF binding sites
+--------------------------------------
+
+We take motif matches obtained from FIMO 
+as candidate binding sites, and add 100 bp flanking regions on 
+both sides of the motifs, then filter candidate sites by FIMO p-value and PWM score,
+and filter the candidate sites falling in ENCODE blacklist regions. 
+
+Download ENCODE blacklist from [ENCODE portal](https://www.encodeproject.org/annotations/ENCSR636HFF/)
+and save as `blacklist.hg38.bed.gz`.
+```{bash, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ENCODE_blacklist
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ENCODE_blacklist
+wget https://www.encodeproject.org/files/ENCFF356LFX/@@download/ENCFF356LFX.bed.gz
+mv ENCFF356LFX.bed.gz blacklist.hg38.bed.gz
+```
+
+Obtain the candidate sites
+
+Using the following script to run step 1 and step 2 for different TF motifs: 
+```{bash, eval=FALSE}
+Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
+  --tf="CTCF" --motif="MA0139.2" \
+  --threshP=1e-5 --threshPWM=10 --flank=100 \
+  --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
+
+Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
+  --tf="REST" --motif="MA0138.3" \
+  --threshP=1e-5 --threshPWM=10 --flank=100 \
+  --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
+```
+
+Step 3: Count DNase-seq and ATC-seq genome-wide cleavage
+-----------------------------------------------------
+
+We use DNase-seq reads from GM12878 cell line (ENCODE ID: `ENCSR000EMT`). 
+
+We first sort and index the BAM file, 
+and obtain the total number of mapped reads from the idxstats file,
+which will be used later 
+when normalizing read counts by library sizes.
+
+```{bash, eval=FALSE}
+module load samtools
+
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/DNaseseq/GM12878
+cd /project2/xinhe/kevinluo/footprint_clustering/data/DNaseseq/GM12878
+
+# Download the BAM file from ENCODE
+wget https://www.encodeproject.org/files/ENCFF020WZB/@@download/ENCFF020WZB.bam
+wget https://www.encodeproject.org/files/ENCFF729UYK/@@download/ENCFF729UYK.bam
+
+# Rename the bam file
+mv ENCFF020WZB.bam DNaseseq_GM12878_alignments_rep1_ENCFF020WZB_hg38.bam
+mv ENCFF729UYK.bam DNaseseq_GM12878_alignments_rep2_ENCFF729UYK_hg38.bam
+
+samtools merge DNaseseq_GM12878_alignments_merged_hg38.bam DNaseseq_GM12878_alignments_rep1_ENCFF020WZB_hg38.bam DNaseseq_GM12878_alignments_rep2_ENCFF729UYK_hg38.bam
+
+samtools sort DNaseseq_GM12878_alignments_merged_hg38.bam -o DNaseseq_GM12878_alignments_merged_sorted_hg38.bam
+
+rm DNaseseq_GM12878_alignments_merged_hg38.bam
+```
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+# This BAM file has already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/DNaseseq/GM12878/DNaseseq_GM12878_alignments_merged_sorted_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+```{r, eval=FALSE}
+count_genome_cuts(bam_file='/project2/xinhe/kevinluo/footprint_clustering/data/DNaseseq/GM12878/DNaseseq_GM12878_alignments_merged_sorted_hg38.bam', 
+                  chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes', 
+                  data_type='DNase',
+                  outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                  outname='GM12878.DNase')
+```
+
+We use ATAC-seq reads from GM12878 cell line (ENCODE ID: `ENCSR095QNB`) for example. 
+
+We first sort and index the BAM file, 
+and obtain the total number of mapped reads from the idxstats file,
+which will be used later 
+when normalizing read counts by library sizes.
+
+```{bash, eval=FALSE}
+module load samtools
+
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ATACseq/GM12878
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ATACseq/GM12878
+
+# Download the BAM file from ENCODE
+wget https://www.encodeproject.org/files/ENCFF415FEC/@@download/ENCFF415FEC.bam
+wget https://www.encodeproject.org/files/ENCFF646NWY/@@download/ENCFF646NWY.bam
+
+# Rename the bam file
+mv ENCFF415FEC.bam ATACseq_GM12878_alignments_rep1_ENCFF415FEC_hg38.bam
+mv ENCFF646NWY.bam ATACseq_GM12878_alignments_rep2_ENCFF646NWY_hg38.bam
+
+samtools merge ATACseq_GM12878_alignments_merged_hg38.bam ATACseq_GM12878_alignments_rep1_ENCFF415FEC_hg38.bam ATACseq_GM12878_alignments_rep2_ENCFF646NWY_hg38.bam
+
+samtools sort ATACseq_GM12878_alignments_merged_hg38.bam -o ATACseq_GM12878_alignments_merged_sorted_hg38.bam
+
+rm ATACseq_GM12878_alignments_merged_hg38.bam
+```
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+# This BAM file has already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project/spott/kevinluo/Fiber_seq/data/ATACseq/ATACseq_GM12878_alignments_merged_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Next, we count the ATAC reads along the genome, 
+and save the genome counts in BigWig files. 
+This step may take a while especially for large BAM files 
+(the example BAM file we used here is very large, ~9.4 GB), 
+but it only needs to be done once. 
+These BigWig files could be for extracting the DNase or ATAC count matrices
+around the candidate sites for different motifs. 
+
+For ATAC-seq, to address the offsets inherent in ATAC-seq reads, 
+we shift ATAC-seq read start positions by aligning the signal across strands, 
+thereby obtaining more accurate Tn5 binding locations (Buenrostro et al., 2013).
+
+```{r, eval=FALSE}
+count_genome_cuts(bam_file='/project2/xinhe/kevinluo/footprint_clustering/data/ATACseq/GM12878/ATACseq_GM12878_alignments_merged_sorted_hg38.bam', 
+                  chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes', 
+                  data_type='ATAC',
+                  outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                  outname='GM12878.ATAC')
+```
+
+Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts
+------------------------------------------------------------------------------------------------------------------
+
+Get DNase-seq read counts matrix around candidate sites:
+
+CTCF
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='GM12878.DNase')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.DNase.counts.mat.rds')
+```
+
+REST
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST_MA0138.3_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='GM12878.DNase')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.DNase.counts.mat.rds')
+```
+
+
+Get ATAC-seq read counts matrix around candidate sites:
+
+CTCF
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='GM12878.ATAC')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.ATAC.counts.mat.rds')
+```
+
+REST
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST_MA0138.3_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='GM12878.ATAC')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.ATAC.counts.mat.rds')
+```
+
+
+Prepare CTCF ChIP-seq data
+---------------------------------------------------------------------
+
+Download CTCF GM12878 ChIP-seq BAM files (ENCODE ID: `ENCSR000DRZ`).
+
+```{bash, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF430XCG/@@download/ENCFF430XCG.bam
+wget https://www.encodeproject.org/files/ENCFF794BPW/@@download/ENCFF794BPW.bam
+
+# Rename the BAM files
+mv ENCFF430XCG.bam CTCF_GM12878_ChIPseq_rep1_ENCFF430XCG_hg38.bam
+mv ENCFF794BPW.bam CTCF_GM12878_ChIPseq_rep2_ENCFF794BPW_hg38.bam
+```
+
+Download CTCF ChIP-seq peaks
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF951PEM/@@download/ENCFF951PEM.bed.gz
+
+# Rename the peak files
+mv ENCFF951PEM.bed.gz CTCF.GM12878.ChIPseq.peaks.bed.gz
+```
+
+Sort and index the BAM files and obtain the number of mapped reads.
+```{r, eval=FALSE}
+# The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/CTCF_GM12878_ChIPseq_rep1_ENCFF430XCG_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/CTCF_GM12878_ChIPseq_rep2_ENCFF794BPW_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
+and normalize to the reference ChIP-seq library size (default: 20 million).
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+sites_chip <- count_normalize_chip(sites,
+                                   chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/CTCF_GM12878_ChIPseq_rep1_ENCFF430XCG_hg38.bam',
+                                                    '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/CTCF_GM12878_ChIPseq_rep2_ENCFF794BPW_hg38.bam'),
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
+```
+
+Add binary ChIP labels from ChIP-seq peaks
+
+```{r eval=FALSE}
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/CTCF.GM12878.ChIPseq.peaks.bed.gz')
+
+saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.GM12878.sites.chip.labels.rds')
+```
+
+
+Prepare REST ChIP-seq data
+---------------------------------------------------------------------
+
+Download REST GM12878 ChIP-seq BAM files (ENCODE ID: `ENCSR000BQS`).
+
+```{bash, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF887ZNY/@@download/ENCFF887ZNY.bam
+wget https://www.encodeproject.org/files/ENCFF213EBE/@@download/ENCFF213EBE.bam
+
+# Rename the BAM files
+mv ENCFF887ZNY.bam REST_GM12878_ChIPseq_rep1_ENCFF887ZNY_hg38.bam
+mv ENCFF213EBE.bam REST_GM12878_ChIPseq_rep2_ENCFF213EBE_hg38.bam
+```
+
+Download REST ChIP-seq peaks
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF262MRD/@@download/ENCFF262MRD.bed.gz
+
+# Rename the peak files
+mv ENCFF262MRD.bed.gz REST.GM12878.ChIPseq.peaks.bed.gz
+```
+
+Sort and index the BAM files and obtain the number of mapped reads.
+```{r, eval=FALSE}
+# The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST_GM12878_ChIPseq_rep1_ENCFF887ZNY_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST_GM12878_ChIPseq_rep2_ENCFF213EBE_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
+and normalize to the reference ChIP-seq library size (default: 20 million).
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST_MA0138.3_1e-5.candidate.sites.rds')
+
+sites_chip <- count_normalize_chip(sites,
+                                   chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST_GM12878_ChIPseq_rep1_ENCFF887ZNY_hg38.bam',
+                                                    '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST_GM12878_ChIPseq_rep2_ENCFF213EBE_hg38.bam'),
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
+```
+
+Add binary ChIP labels from ChIP-seq peaks
+
+```{r eval=FALSE}
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST.GM12878.ChIPseq.peaks.bed.gz')
+
+saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.sites.chip.labels.rds')
+```
+
+[jaspar]: https://jaspar.genereg.net/
+[Snakemake]: https://snakemake.readthedocs.io/en/stable/
+[top-pipeline]: https://github.com/HarteminkLab/TOP-paper-resources/tree/main/code/snakemake
+[top-resources-website]: https://harteminklab.github.io/TOP-paper-resources
+[bedtools]: https://bedtools.readthedocs.io/en/latest/
+[bwtool]: https://github.com/CRG-Barcelona/bwtool/wiki
+[GenomicRanges]: https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html
+[Rsamtools]: https://bioconductor.org/packages/release/bioc/html/Rsamtools.html
+[data.table]: https://cran.r-project.org/web/packages/data.table/index.html
+[doParallel]: https://cran.r-project.org/web/packages/doParallel/index.html
+[ggplot2]: https://ggplot2.tidyverse.org
+[fimo]: https://meme-suite.org/meme/doc/fimo.html
+[bedGraphToBigWig]:https://genome.ucsc.edu/goldenpath/help/bigWig.html
+[bigWigAverageOverBed]:https://genome.ucsc.edu/goldenpath/help/bigWig.html
+[UCSC utilities]: http://hgdownload.soe.ucsc.edu/admin/exe/
+[MEME]:https://meme-suite.org/meme/index.html
