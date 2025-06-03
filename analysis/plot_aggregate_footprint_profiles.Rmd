@@ -22,7 +22,7 @@ library(ggplot2)
 source("code/plots.R")
 ```
 
-Here, we explore the accessibility profiles round TF motif match sites.
+Here, we explore the DNase-seq and ATAC-seq accessibility profiles round TF motif matches.
 
 ## CTCF
 
@@ -242,7 +242,7 @@ plot_data_matrix_heatmap(pwm, data.l, chip.df, rank,
 ```
 
 
-### CTCF profiles in K562
+### REST profiles in K562
 
 We scanned REST motif matches along the genome, then extended 100bp window on both sides of motif matches. 
 
