@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kaixuan Luo" />
 
-<meta name="date" content="2025-06-03" />
+<meta name="date" content="2025-09-10" />
 
 <title>Prepare input data in GM12878 cell line</title>
 
@@ -357,7 +357,7 @@ div.tocify {
 <h1 class="title toc-ignore">Prepare input data in GM12878 cell
 line</h1>
 <h4 class="author">Kaixuan Luo</h4>
-<h4 class="date">2025-06-03</h4>
+<h4 class="date">2025-09-10</h4>
 
 </div>
 
@@ -386,7 +386,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-03
+<strong>Last updated:</strong> 2025-09-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -517,15 +517,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree715d7d8bb9f2ed68904d26744156e27c19e9ee87targetblank715d7d8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8e46a4664959487556b298cc0e8f7894c086c1cftargetblank8e46a46a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/715d7d8bb9f2ed68904d26744156e27c19e9ee87" target="_blank">715d7d8</a>
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/8e46a4664959487556b298cc0e8f7894c086c1cf" target="_blank">8e46a46</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree715d7d8bb9f2ed68904d26744156e27c19e9ee87targetblank715d7d8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree8e46a4664959487556b298cc0e8f7894c086c1cftargetblank8e46a46a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -535,7 +535,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/715d7d8bb9f2ed68904d26744156e27c19e9ee87" target="_blank">715d7d8</a>.
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/8e46a4664959487556b298cc0e8f7894c086c1cf" target="_blank">8e46a46</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -552,6 +552,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+
+Unstaged changes:
+    Modified:   analysis/prepare_input_data_K562.Rmd
+    Modified:   code/get_motif_sites.R
 
 </code></pre>
 <p>
@@ -598,6 +602,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/8e46a4664959487556b298cc0e8f7894c086c1cf/analysis/prepare_input_data_GM12878.Rmd" target="_blank">8e46a46</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-09-10
+</td>
+<td>
+wflow_publish("analysis/prepare_input_data_GM12878.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kevinlkx/footprint_clustering/7d0b2e45413bb042fc2d7d660b3df928d7718556/docs/prepare_input_data_GM12878.html" target="_blank">7d0b2e4</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -707,13 +745,29 @@ mv ENCFF356LFX.bed.gz blacklist.hg38.bed.gz</code></pre>
 <p>Obtain the candidate sites</p>
 <p>Using the following script to run step 1 and step 2 for different TF
 motifs:</p>
-<pre class="bash"><code>Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
-  --tf=&quot;CTCF&quot; --motif=&quot;MA0139.2&quot; \
+<pre class="bash"><code>cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0139.2.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0138.3.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0506.1.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+motif_dir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;
+
+## CTCF
+Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
+  --tf=&#39;CTCF&#39; --motif=&#39;MA0139.2&#39; --motif_dir=$motif_dir \
   --threshP=1e-5 --threshPWM=10 --flank=100 \
   --outdir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;
 
+## REST
 Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
-  --tf=&quot;REST&quot; --motif=&quot;MA0138.3&quot; \
+  --tf=&#39;REST&#39; --motif=&#39;MA0138.3&#39; --motif_dir=$motif_dir \
+  --threshP=1e-5 --threshPWM=10 --flank=100 \
+  --outdir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;
+
+## NRF1
+Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
+  --tf=&#39;NRF1&#39; --motif=&#39;MA0506.1&#39; --motif_dir=$motif_dir \
   --threshP=1e-5 --threshPWM=10 --flank=100 \
   --outdir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;</code></pre>
 </div>
@@ -811,6 +865,13 @@ count_matrix &lt;- get_sites_counts(sites,
                                  genomecount_dir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;,
                                  genomecount_name=&#39;GM12878.DNase&#39;)
 saveRDS(count_matrix, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.DNase.counts.mat.rds&#39;)</code></pre>
+<p>NRF1</p>
+<pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds&#39;)
+
+count_matrix &lt;- get_sites_counts(sites,
+                                 genomecount_dir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;,
+                                 genomecount_name=&#39;GM12878.DNase&#39;)
+saveRDS(count_matrix, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.GM12878.DNase.counts.mat.rds&#39;)</code></pre>
 <p>Get ATAC-seq read counts matrix around candidate sites:</p>
 <p>CTCF</p>
 <pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds&#39;)
@@ -826,6 +887,13 @@ count_matrix &lt;- get_sites_counts(sites,
                                  genomecount_dir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;,
                                  genomecount_name=&#39;GM12878.ATAC&#39;)
 saveRDS(count_matrix, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.ATAC.counts.mat.rds&#39;)</code></pre>
+<p>NRF1</p>
+<pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds&#39;)
+
+count_matrix &lt;- get_sites_counts(sites,
+                                 genomecount_dir=&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/&#39;,
+                                 genomecount_name=&#39;GM12878.ATAC&#39;)
+saveRDS(count_matrix, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.GM12878.ATAC.counts.mat.rds&#39;)</code></pre>
 </div>
 <div id="prepare-ctcf-chip-seq-data" class="section level2">
 <h2>Prepare CTCF ChIP-seq data</h2>
@@ -906,10 +974,52 @@ sites_chip &lt;- count_normalize_chip(sites,
                                    chip_bam_files=c(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST_GM12878_ChIPseq_rep1_ENCFF887ZNY_hg38.bam&#39;,
                                                     &#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST_GM12878_ChIPseq_rep2_ENCFF213EBE_hg38.bam&#39;),
                                    chrom_size_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes&#39;)</code></pre>
-<p>Add binary ChIP labels from ChIP-seq peaks</p>
+<p>Add binary ChIP labels from ChIP-seq peaksxw</p>
 <pre class="r"><code>sites_chip_labels &lt;- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST.GM12878.ChIPseq.peaks.bed.gz&#39;)
 
 saveRDS(sites_chip_labels, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.sites.chip.labels.rds&#39;)</code></pre>
+</div>
+<div id="prepare-nrf1-chip-seq-data" class="section level2">
+<h2>Prepare NRF1 ChIP-seq data</h2>
+<p>Download NRF1 GM12878 ChIP-seq BAM files (ENCODE ID:
+<code>ENCSR000DZO</code>).</p>
+<pre class="bash"><code>mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF588FQW/@@download/ENCFF588FQW.bam
+wget https://www.encodeproject.org/files/ENCFF951GZL/@@download/ENCFF951GZL.bam
+
+# Rename the BAM files
+mv ENCFF588FQW.bam NRF1_GM12878_ChIPseq_rep1_ENCFF588FQW_hg38.bam
+mv ENCFF951GZL.bam NRF1_GM12878_ChIPseq_rep2_ENCFF951GZL_hg38.bam</code></pre>
+<p>Download NRF1 ChIP-seq peaks</p>
+<pre class="bash"><code>cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF864EBU/@@download/ENCFF864EBU.bed.gz
+
+# Rename the peak files
+mv ENCFF864EBU.bed.gz NRF1.GM12878.ChIPseq.peaks.bed.gz</code></pre>
+<p>Sort and index the BAM files and obtain the number of mapped
+reads.</p>
+<pre class="r"><code># The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep1_ENCFF588FQW_hg38.bam&#39;, sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep2_ENCFF951GZL_hg38.bam&#39;, sort=FALSE, index=TRUE, idxstats=TRUE)</code></pre>
+<p>Count ChIP-seq reads around candidate sites (merge ChIP-seq
+replicates), and normalize to the reference ChIP-seq library size
+(default: 20 million).</p>
+<pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds&#39;)
+
+sites_chip &lt;- count_normalize_chip(sites,
+                                   chip_bam_files=c(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep1_ENCFF588FQW_hg38.bam&#39;,
+                                                    &#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep2_ENCFF951GZL_hg38.bam&#39;),
+                                   chrom_size_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes&#39;)</code></pre>
+<p>Add binary ChIP labels from ChIP-seq peaksxw</p>
+<pre class="r"><code>sites_chip_labels &lt;- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1.GM12878.ChIPseq.peaks.bed.gz&#39;)
+
+saveRDS(sites_chip_labels, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.GM12878.sites.chip.labels.rds&#39;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
