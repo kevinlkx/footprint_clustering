@@ -228,6 +228,8 @@ saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_d
 Prepare CTCF ChIP-seq data
 ---------------------------------------------------------------------
 
+### CTCF ChIP-seq from ENCSR000EGM (Stanford)
+
 Download CTCF K562 ChIP-seq BAM files (ENCODE ID: `ENCSR000EGM`).
 
 ```{bash, eval=FALSE}
@@ -243,7 +245,7 @@ mv ENCFF172KOJ.bam CTCF_K562_ChIPseq_rep1_ENCFF430XCG_hg38.bam
 mv ENCFF265ZSP.bam CTCF_K562_ChIPseq_rep2_ENCFF794BPW_hg38.bam
 ```
 
-Download CTCF ChIP-seq peaks
+Download CTCF ChIP-seq peaks from 
 
 ```{bash, eval=FALSE}
 cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
@@ -275,11 +277,122 @@ chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K56
 ```
 
 Add binary ChIP labels from ChIP-seq peaks
-
 ```{r eval=FALSE}
 sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF.K562.ChIPseq.peaks.bed.gz')
 
 saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.sites.chip.labels.rds')
+```
+
+
+### CTCF ChIP-seq from ENCSR000DWE (UW)
+
+Download CTCF K562 ChIP-seq BAM files (ENCODE ID: `ENCSR000DWE`).
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF800GVR/@@download/ENCFF800GVR.bam
+wget https://www.encodeproject.org/files/ENCFF196QVZ/@@download/ENCFF196QVZ.bam
+
+# Rename the BAM files
+mv ENCFF800GVR.bam CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam
+mv ENCFF196QVZ.bam CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam
+```
+
+Download CTCF ChIP-seq peaks from 
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF736NYC/@@download/ENCFF736NYC.bed.gz
+
+# Rename the peak files
+mv ENCFF736NYC.bed.gz CTCF.K562.ChIPseq.UW.peaks.bed.gz
+```
+
+Sort and index the BAM files and obtain the number of mapped reads.
+```{r, eval=FALSE}
+# The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
+and normalize to the reference ChIP-seq library size (default: 20 million).
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+sites_chip <- count_normalize_chip(sites,
+                                   chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam',
+                                                    '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam'),
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes',
+                                   bedtools_path = "~/softwares/bin/bedtools")
+```
+
+Add binary ChIP labels from ChIP-seq peaks
+```{r eval=FALSE}
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF.K562.ChIPseq.UW.peaks.bed.gz')
+
+saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.UW.sites.chip.labels.rds')
+```
+
+
+### CTCF ChIP-seq from ENCSR000AKO (Broad)
+
+Download CTCF K562 ChIP-seq BAM files (ENCODE ID: `ENCSR000AKO`).
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF834MPG/@@download/ENCFF834MPG.bam
+wget https://www.encodeproject.org/files/ENCFF173QSV/@@download/ENCFF173QSV.bam
+
+# Rename the BAM files
+mv ENCFF834MPG.bam CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam
+mv ENCFF173QSV.bam CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam
+```
+
+Download CTCF ChIP-seq peaks from 
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF769AUF/@@download/ENCFF769AUF.bed.gz
+
+# Rename the peak files
+mv ENCFF769AUF.bed.gz CTCF.K562.ChIPseq.Broad.peaks.bed.gz
+```
+
+Sort and index the BAM files and obtain the number of mapped reads.
+```{r, eval=FALSE}
+# The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
+and normalize to the reference ChIP-seq library size (default: 20 million).
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+sites_chip <- count_normalize_chip(sites,
+                                   chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam',
+                                                    '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam'),
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes',
+                                   bedtools_path = "~/softwares/bin/bedtools")
+```
+
+Add binary ChIP labels from ChIP-seq peaks
+```{r eval=FALSE}
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF.K562.ChIPseq.Broad.peaks.bed.gz')
+
+saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.Broad.sites.chip.labels.rds')
 ```
 
 Prepare REST ChIP-seq data
