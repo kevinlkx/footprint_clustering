@@ -86,19 +86,37 @@ Obtain the candidate sites
 
 Using the following script to run step 1 and step 2 for different TF motifs: 
 ```{bash, eval=FALSE}
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0139.2.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0138.3.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0506.1.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+motif_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
+
+## CTCF
 Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
-  --tf="CTCF" --motif="MA0139.2" \
+  --tf='CTCF' --motif='MA0139.2' --motif_dir=$motif_dir \
   --threshP=1e-5 --threshPWM=10 --flank=100 \
   --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
 
+## REST
 Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
-  --tf="REST" --motif="MA0138.3" \
+  --tf='REST' --motif='MA0138.3' --motif_dir=$motif_dir \
+  --threshP=1e-5 --threshPWM=10 --flank=100 \
+  --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
+
+## NRF1
+Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
+  --tf='NRF1' --motif='MA0506.1' --motif_dir=$motif_dir \
   --threshP=1e-5 --threshPWM=10 --flank=100 \
   --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
 ```
 
 Step 3: Count DNase-seq and ATC-seq genome-wide cleavage
 -----------------------------------------------------
+
+### DNase-seq data
 
 We use DNase-seq reads from K562 cell line (ENCODE ID: `ENCSR000EMT`). 
 
@@ -135,6 +153,8 @@ count_genome_cuts(bam_file='/project2/xinhe/kevinluo/footprint_clustering/data/D
                   outname='K562.DNase')
 ```
 
+### ATAC-seq data
+
 We use ATAC-seq reads from K562 cell line (ENCODE ID: `ENCSR483RKN`) for example. 
 
 We first sort and index the BAM file, 
@@ -161,6 +181,8 @@ samtools merge ATACseq_K562_alignments_merged_hg38.bam ATACseq_K562_alignments_r
 samtools sort ATACseq_K562_alignments_merged_hg38.bam -o ATACseq_K562_alignments_merged_sorted_hg38.bam
 
 rm ATACseq_K562_alignments_merged_hg38.bam
+rm ATACseq_K562_alignments_rep1_ENCFF512VEZ_hg38.bam
+rm ATACseq_K562_alignments_rep2_ENCFF987XOV_hg38.bam
 ```
 
 ```{r, eval=FALSE, message=FALSE, warning=FALSE}
@@ -176,10 +198,11 @@ count_genome_cuts(bam_file='/project2/xinhe/kevinluo/footprint_clustering/data/A
                   outname='K562.ATAC')
 ```
 
+
 Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts
 ------------------------------------------------------------------------------------------------------------------
 
-Get DNase-seq read counts matrix around candidate sites:
+### Get DNase-seq read counts matrix around candidate sites:
 
 CTCF
 ```{r, eval=FALSE}
@@ -201,8 +224,18 @@ count_matrix <- get_sites_counts(sites,
 saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.K562.DNase.counts.mat.rds')
 ```
 
+NRF1
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds')
 
-Get ATAC-seq read counts matrix around candidate sites:
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='K562.DNase')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.K562.DNase.counts.mat.rds')
+```
+
+
+### Get ATAC-seq read counts matrix around candidate sites:
 
 CTCF
 ```{r, eval=FALSE}
@@ -212,6 +245,16 @@ count_matrix <- get_sites_counts(sites,
                                  genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
                                  genomecount_name='K562.ATAC')
 saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.ATAC.counts.mat.rds')
+```
+
+CTCF (ENCSR483RKN)
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='K562.ATAC.ENCSR483RKN')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.ATAC.ENCSR483RKN.counts.mat.rds')
 ```
 
 REST
@@ -224,6 +267,15 @@ count_matrix <- get_sites_counts(sites,
 saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.K562.ATAC.counts.mat.rds')
 ```
 
+NRF1
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='K562.ATAC')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.K562.ATAC.counts.mat.rds')
+```
 
 Prepare CTCF ChIP-seq data
 ---------------------------------------------------------------------
@@ -328,8 +380,7 @@ sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/h
 sites_chip <- count_normalize_chip(sites,
                                    chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam',
                                                     '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam'),
-                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes',
-                                   bedtools_path = "~/softwares/bin/bedtools")
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
 ```
 
 Add binary ChIP labels from ChIP-seq peaks
@@ -384,8 +435,7 @@ sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/h
 sites_chip <- count_normalize_chip(sites,
                                    chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam',
                                                     '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam'),
-                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes',
-                                   bedtools_path = "~/softwares/bin/bedtools")
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
 ```
 
 Add binary ChIP labels from ChIP-seq peaks
@@ -451,6 +501,64 @@ sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/p
 
 saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.K562.sites.chip.labels.rds')
 ```
+
+
+Prepare NRF1 ChIP-seq data
+---------------------------------------------------------------------
+
+Download NRF1 K562 ChIP-seq BAM files (ENCODE ID: `ENCSR837EYC`).
+
+```{bash, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF265VZX/@@download/ENCFF265VZX.bam
+wget https://www.encodeproject.org/files/ENCFF677KJK/@@download/ENCFF677KJK.bam
+
+# Rename the BAM files
+mv ENCFF265VZX.bam NRF1_K562_ChIPseq_rep1_ENCFF265VZX_hg38.bam
+mv ENCFF677KJK.bam NRF1_K562_ChIPseq_rep2_ENCFF677KJK_hg38.bam
+```
+
+Download NRF1 ChIP-seq peaks
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF259YUE/@@download/ENCFF259YUE.bed.gz
+
+# Rename the peak files
+mv ENCFF259YUE.bed.gz NRF1.K562.ChIPseq.peaks.bed.gz
+```
+
+Sort and index the BAM files and obtain the number of mapped reads.
+```{r, eval=FALSE}
+# The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/NRF1_K562_ChIPseq_rep1_ENCFF265VZX_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/NRF1_K562_ChIPseq_rep2_ENCFF677KJK_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
+and normalize to the reference ChIP-seq library size (default: 20 million).
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds')
+
+sites_chip <- count_normalize_chip(sites,
+chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/NRF1_K562_ChIPseq_rep1_ENCFF265VZX_hg38.bam',
+'/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/NRF1_K562_ChIPseq_rep2_ENCFF677KJK_hg38.bam'),
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
+```
+
+Add binary ChIP labels from ChIP-seq peaks
+```{r eval=FALSE}
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/NRF1.K562.ChIPseq.peaks.bed.gz')
+
+saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.K562.sites.chip.labels.rds')
+```
+
 
 [jaspar]: https://jaspar.genereg.net/
 [Snakemake]: https://snakemake.readthedocs.io/en/stable/
