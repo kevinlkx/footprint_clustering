@@ -86,13 +86,29 @@ Obtain the candidate sites
 
 Using the following script to run step 1 and step 2 for different TF motifs: 
 ```{bash, eval=FALSE}
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0139.2.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0138.3.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+cp /project2/xinhe/kevinluo/footprint_clustering/data/motifs/JASPAR2024_CORE_non-redundant_pfms_meme/MA0506.1.meme /project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/
+
+motif_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
+
+## CTCF
 Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
-  --tf="CTCF" --motif="MA0139.2" \
+  --tf='CTCF' --motif='MA0139.2' --motif_dir=$motif_dir \
   --threshP=1e-5 --threshPWM=10 --flank=100 \
   --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
 
+## REST
 Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
-  --tf="REST" --motif="MA0138.3" \
+  --tf='REST' --motif='MA0138.3' --motif_dir=$motif_dir \
+  --threshP=1e-5 --threshPWM=10 --flank=100 \
+  --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
+
+## NRF1
+Rscript ~/projects/footprint_clustering/code/get_motif_sites.R \
+  --tf='NRF1' --motif='MA0506.1' --motif_dir=$motif_dir \
   --threshP=1e-5 --threshPWM=10 --flank=100 \
   --outdir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/'
 ```
@@ -219,6 +235,15 @@ count_matrix <- get_sites_counts(sites,
 saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.DNase.counts.mat.rds')
 ```
 
+NRF1
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='GM12878.DNase')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.GM12878.DNase.counts.mat.rds')
+```
 
 Get ATAC-seq read counts matrix around candidate sites:
 
@@ -242,6 +267,15 @@ count_matrix <- get_sites_counts(sites,
 saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.ATAC.counts.mat.rds')
 ```
 
+NRF1
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds')
+
+count_matrix <- get_sites_counts(sites,
+                                 genomecount_dir='/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/',
+                                 genomecount_name='GM12878.ATAC')
+saveRDS(count_matrix, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.GM12878.ATAC.counts.mat.rds')
+```
 
 Prepare CTCF ChIP-seq data
 ---------------------------------------------------------------------
@@ -350,13 +384,70 @@ sites_chip <- count_normalize_chip(sites,
                                    chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
 ```
 
-Add binary ChIP labels from ChIP-seq peaks
-
+Add binary ChIP labels from ChIP-seq peaksxw
 ```{r eval=FALSE}
 sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/REST.GM12878.ChIPseq.peaks.bed.gz')
 
 saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/REST.GM12878.sites.chip.labels.rds')
 ```
+
+
+Prepare NRF1 ChIP-seq data
+---------------------------------------------------------------------
+
+Download NRF1 GM12878 ChIP-seq BAM files (ENCODE ID: `ENCSR000DZO`).
+
+```{bash, eval=FALSE}
+mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF588FQW/@@download/ENCFF588FQW.bam
+wget https://www.encodeproject.org/files/ENCFF951GZL/@@download/ENCFF951GZL.bam
+
+# Rename the BAM files
+mv ENCFF588FQW.bam NRF1_GM12878_ChIPseq_rep1_ENCFF588FQW_hg38.bam
+mv ENCFF951GZL.bam NRF1_GM12878_ChIPseq_rep2_ENCFF951GZL_hg38.bam
+```
+
+Download NRF1 ChIP-seq peaks
+
+```{bash, eval=FALSE}
+cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF864EBU/@@download/ENCFF864EBU.bed.gz
+
+# Rename the peak files
+mv ENCFF864EBU.bed.gz NRF1.GM12878.ChIPseq.peaks.bed.gz
+```
+
+Sort and index the BAM files and obtain the number of mapped reads.
+```{r, eval=FALSE}
+# The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep1_ENCFF588FQW_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep2_ENCFF951GZL_hg38.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+```
+
+Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
+and normalize to the reference ChIP-seq library size (default: 20 million).
+```{r, eval=FALSE}
+sites <- readRDS('/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1_MA0506.1_1e-5.candidate.sites.rds')
+
+sites_chip <- count_normalize_chip(sites,
+                                   chip_bam_files=c('/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep1_ENCFF588FQW_hg38.bam',
+                                                    '/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1_GM12878_ChIPseq_rep2_ENCFF951GZL_hg38.bam'),
+                                   chrom_size_file='/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes')
+```
+
+Add binary ChIP labels from ChIP-seq peaksxw
+```{r eval=FALSE}
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file='/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/GM12878/NRF1.GM12878.ChIPseq.peaks.bed.gz')
+
+saveRDS(sites_chip_labels, '/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/NRF1.GM12878.sites.chip.labels.rds')
+```
+
 
 [jaspar]: https://jaspar.genereg.net/
 [Snakemake]: https://snakemake.readthedocs.io/en/stable/
