@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kaixuan Luo" />
 
-<meta name="date" content="2025-06-03" />
+<meta name="date" content="2025-09-10" />
 
 <title>Prepare input data in K562 cell line</title>
 
@@ -356,7 +356,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Prepare input data in K562 cell line</h1>
 <h4 class="author">Kaixuan Luo</h4>
-<h4 class="date">2025-06-03</h4>
+<h4 class="date">2025-09-10</h4>
 
 </div>
 
@@ -385,7 +385,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-03
+<strong>Last updated:</strong> 2025-09-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -516,15 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree715d7d8bb9f2ed68904d26744156e27c19e9ee87targetblank715d7d8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtreef2089fc4c54c3e84969b6aa35d9d6a268e87f01ctargetblankf2089fca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/715d7d8bb9f2ed68904d26744156e27c19e9ee87" target="_blank">715d7d8</a>
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/f2089fc4c54c3e84969b6aa35d9d6a268e87f01c" target="_blank">f2089fc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtree715d7d8bb9f2ed68904d26744156e27c19e9ee87targetblank715d7d8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkevinlkxfootprintclusteringtreef2089fc4c54c3e84969b6aa35d9d6a268e87f01ctargetblankf2089fca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -534,7 +534,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kevinlkx/footprint_clustering/tree/715d7d8bb9f2ed68904d26744156e27c19e9ee87" target="_blank">715d7d8</a>.
+<a href="https://github.com/kevinlkx/footprint_clustering/tree/f2089fc4c54c3e84969b6aa35d9d6a268e87f01c" target="_blank">f2089fc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -597,6 +597,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kevinlkx/footprint_clustering/blob/f2089fc4c54c3e84969b6aa35d9d6a268e87f01c/analysis/prepare_input_data_K562.Rmd" target="_blank">f2089fc</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-09-10
+</td>
+<td>
+wflow_publish("analysis/prepare_input_data_K562.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kevinlkx/footprint_clustering/7d0b2e45413bb042fc2d7d660b3df928d7718556/docs/prepare_input_data_K562.html" target="_blank">7d0b2e4</a>
+</td>
+<td>
+kevinlkx
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -812,6 +846,9 @@ saveRDS(count_matrix, &#39;/project2/xinhe/kevinluo/footprint_clustering/process
 </div>
 <div id="prepare-ctcf-chip-seq-data" class="section level2">
 <h2>Prepare CTCF ChIP-seq data</h2>
+<div id="ctcf-chip-seq-from-encsr000egm-stanford"
+class="section level3">
+<h3>CTCF ChIP-seq from ENCSR000EGM (Stanford)</h3>
 <p>Download CTCF K562 ChIP-seq BAM files (ENCODE ID:
 <code>ENCSR000EGM</code>).</p>
 <pre class="bash"><code>mkdir -p /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
@@ -824,7 +861,7 @@ wget https://www.encodeproject.org/files/ENCFF265ZSP/@@download/ENCFF265ZSP.bam
 # Rename the BAM files
 mv ENCFF172KOJ.bam CTCF_K562_ChIPseq_rep1_ENCFF430XCG_hg38.bam
 mv ENCFF265ZSP.bam CTCF_K562_ChIPseq_rep2_ENCFF794BPW_hg38.bam</code></pre>
-<p>Download CTCF ChIP-seq peaks</p>
+<p>Download CTCF ChIP-seq peaks from</p>
 <pre class="bash"><code>cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
 
 # Download the ChIP-seq peaks
@@ -851,6 +888,91 @@ chip_bam_files=c(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq
 <pre class="r"><code>sites_chip_labels &lt;- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF.K562.ChIPseq.peaks.bed.gz&#39;)
 
 saveRDS(sites_chip_labels, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.sites.chip.labels.rds&#39;)</code></pre>
+</div>
+<div id="ctcf-chip-seq-from-encsr000dwe-uw" class="section level3">
+<h3>CTCF ChIP-seq from ENCSR000DWE (UW)</h3>
+<p>Download CTCF K562 ChIP-seq BAM files (ENCODE ID:
+<code>ENCSR000DWE</code>).</p>
+<pre class="bash"><code>cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF800GVR/@@download/ENCFF800GVR.bam
+wget https://www.encodeproject.org/files/ENCFF196QVZ/@@download/ENCFF196QVZ.bam
+
+# Rename the BAM files
+mv ENCFF800GVR.bam CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam
+mv ENCFF196QVZ.bam CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam</code></pre>
+<p>Download CTCF ChIP-seq peaks from</p>
+<pre class="bash"><code>cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF736NYC/@@download/ENCFF736NYC.bed.gz
+
+# Rename the peak files
+mv ENCFF736NYC.bed.gz CTCF.K562.ChIPseq.UW.peaks.bed.gz</code></pre>
+<p>Sort and index the BAM files and obtain the number of mapped
+reads.</p>
+<pre class="r"><code># The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam&#39;, sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam&#39;, sort=FALSE, index=TRUE, idxstats=TRUE)</code></pre>
+<p>Count ChIP-seq reads around candidate sites (merge ChIP-seq
+replicates), and normalize to the reference ChIP-seq library size
+(default: 20 million).</p>
+<pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds&#39;)
+
+sites_chip &lt;- count_normalize_chip(sites,
+                                   chip_bam_files=c(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep1_ENCFF800GVR_hg38.bam&#39;,
+                                                    &#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_UW_rep2_ENCFF196QVZ_hg38.bam&#39;),
+                                   chrom_size_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes&#39;,
+                                   bedtools_path = &quot;~/softwares/bin/bedtools&quot;)</code></pre>
+<p>Add binary ChIP labels from ChIP-seq peaks</p>
+<pre class="r"><code>sites_chip_labels &lt;- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF.K562.ChIPseq.UW.peaks.bed.gz&#39;)
+
+saveRDS(sites_chip_labels, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.UW.sites.chip.labels.rds&#39;)</code></pre>
+</div>
+<div id="ctcf-chip-seq-from-encsr000ako-broad" class="section level3">
+<h3>CTCF ChIP-seq from ENCSR000AKO (Broad)</h3>
+<p>Download CTCF K562 ChIP-seq BAM files (ENCODE ID:
+<code>ENCSR000AKO</code>).</p>
+<pre class="bash"><code>cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq BAM files
+wget https://www.encodeproject.org/files/ENCFF834MPG/@@download/ENCFF834MPG.bam
+wget https://www.encodeproject.org/files/ENCFF173QSV/@@download/ENCFF173QSV.bam
+
+# Rename the BAM files
+mv ENCFF834MPG.bam CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam
+mv ENCFF173QSV.bam CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam</code></pre>
+<p>Download CTCF ChIP-seq peaks from</p>
+<pre class="bash"><code>cd /project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562
+
+# Download the ChIP-seq peaks
+wget https://www.encodeproject.org/files/ENCFF769AUF/@@download/ENCFF769AUF.bed.gz
+
+# Rename the peak files
+mv ENCFF769AUF.bed.gz CTCF.K562.ChIPseq.Broad.peaks.bed.gz</code></pre>
+<p>Sort and index the BAM files and obtain the number of mapped
+reads.</p>
+<pre class="r"><code># The BAM files have already been sorted, so we skip the sorting step. 
+sort_index_idxstats_bam(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam&#39;, sort=FALSE, index=TRUE, idxstats=TRUE)
+
+sort_index_idxstats_bam(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam&#39;, sort=FALSE, index=TRUE, idxstats=TRUE)</code></pre>
+<p>Count ChIP-seq reads around candidate sites (merge ChIP-seq
+replicates), and normalize to the reference ChIP-seq library size
+(default: 20 million).</p>
+<pre class="r"><code>sites &lt;- readRDS(&#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF_MA0139.2_1e-5.candidate.sites.rds&#39;)
+
+sites_chip &lt;- count_normalize_chip(sites,
+                                   chip_bam_files=c(&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep1_ENCFF834MPG_hg38.bam&#39;,
+                                                    &#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF_K562_ChIPseq_Broad_rep2_ENCFF173QSV_hg38.bam&#39;),
+                                   chrom_size_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ref_genome/hg38.chrom.sizes&#39;,
+                                   bedtools_path = &quot;~/softwares/bin/bedtools&quot;)</code></pre>
+<p>Add binary ChIP labels from ChIP-seq peaks</p>
+<pre class="r"><code>sites_chip_labels &lt;- add_chip_peak_labels_to_sites(sites_chip,chip_peak_file=&#39;/project2/xinhe/kevinluo/footprint_clustering/data/ChIPseq/K562/CTCF.K562.ChIPseq.Broad.peaks.bed.gz&#39;)
+
+saveRDS(sites_chip_labels, &#39;/project2/xinhe/kevinluo/footprint_clustering/processed_data/hg38/CTCF.K562.Broad.sites.chip.labels.rds&#39;)</code></pre>
+</div>
 </div>
 <div id="prepare-rest-chip-seq-data" class="section level2">
 <h2>Prepare REST ChIP-seq data</h2>
